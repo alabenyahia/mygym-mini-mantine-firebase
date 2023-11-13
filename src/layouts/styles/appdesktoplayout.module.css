@@ -1,0 +1,30 @@
+.main {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+}
+
+.nav {
+  width: 80px;
+  height: 100%;
+  background-color: #6e7a9a;
+  padding: 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 3px 0px 5px 0px rgba(0, 0, 0, 0.3);
+}
+
+.sidebarbtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  color: #e2e5f0;
+  transition: 120ms ease-in-out;
+  padding: 8px 0;
+}
+
+.sidebarbtn:hover {
+  background-color: #78829f;
+}
