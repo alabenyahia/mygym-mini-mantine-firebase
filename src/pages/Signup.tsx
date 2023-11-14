@@ -44,8 +44,10 @@ export default function Signup() {
         try {
           setAddUserLoading(true);
           await setDoc(doc(firestore, "users", userCredential.user.uid), {
-            name,
-            gymName,
+            userData: {
+              name,
+              gymName,
+            },
           });
           toast.success("Registration successfull!");
         } catch (e) {

@@ -3,10 +3,17 @@ import styles from "./styles/memberships.module.css";
 import { IconPlus } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
+import { useState } from "react";
+import { auth, firestore } from "../../config/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+import toast from "react-hot-toast";
 
 export default function Memberships() {
   const [drawerOpened, { open: openDrawer, close: closeDrawer }] =
     useDisclosure(false);
+  const [user, loading, error] = useAuthState(auth);
+  const [addMembershipLoading, setAddMembershipLoading] = useState(false);
   const form = useForm({
     initialValues: {
       name: "",
@@ -29,6 +36,32 @@ export default function Memberships() {
     },
   });
 
+  const addMembership = form.onSubmit(
+    ({ name, price, durationType, duration }) => {
+      if (user) {
+        setAddMembershipLoading(true);
+        updateDoc(doc(firestore, "users", user.uid), {
+          "manage.memberships": arrayUnion({
+            name,
+            price,
+            durationType,
+            duration,
+          }),
+        })
+          .then((value) => {
+            toast.success("Membership created");
+            console.log("membership", value);
+          })
+          .catch((e) => {
+            toast.error("Creating membership failed!");
+          })
+          .finally(() => {
+            setAddMembershipLoading(false);
+          });
+      }
+    }
+  );
+
   return (
     <div className={styles.container}>
       <div className={styles.addbar}>
@@ -38,8 +71,6 @@ export default function Memberships() {
         </Button>
       </div>
 
-      <div></div>
-
       <Drawer
         opened={drawerOpened}
         onClose={closeDrawer}
@@ -47,7 +78,7 @@ export default function Memberships() {
         position="right"
         size="33%"
       >
-        <form onSubmit={() => console.log("submitted")} className={styles.form}>
+        <form onSubmit={addMembership} className={styles.form}>
           <TextInput
             label="Membership name"
             withAsterisk
@@ -91,6 +122,7 @@ export default function Memberships() {
             mt={16}
             rightSection={<IconPlus size={22} />}
             className={styles.formbtn}
+            disabled={addMembershipLoading || loading}
           >
             Create
           </Button>
