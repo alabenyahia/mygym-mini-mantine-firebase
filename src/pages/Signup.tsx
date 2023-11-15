@@ -1,15 +1,17 @@
-import { Title, Paper, TextInput, Button } from "@mantine/core";
+import { Title, Text, Paper, TextInput, Button } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth, firestore } from "../config/firebase";
 import { useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
   const [createUserWithEmailAndPassword, user, loading, error] =
     useCreateUserWithEmailAndPassword(auth);
   const [addUserLoading, setAddUserLoading] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm({
     initialValues: {
@@ -107,15 +109,42 @@ export default function Signup() {
             {...form.getInputProps("password")}
           />
 
-          <Button
-            disabled={loading || addUserLoading}
-            variant="filled"
-            size="md"
-            type="submit"
-            mt={16}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginTop: "16px",
+            }}
           >
-            Signup
-          </Button>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Text size="sm" c="dimmed">
+                Already have an account?
+              </Text>
+              <Button
+                variant="transparent"
+                size="compact-sm"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </Button>
+            </div>
+
+            <Button
+              m={0}
+              disabled={loading || addUserLoading}
+              variant="filled"
+              size="md"
+              type="submit"
+            >
+              Signup
+            </Button>
+          </div>
         </form>
       </Paper>
     </div>

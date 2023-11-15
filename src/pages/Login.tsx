@@ -1,12 +1,15 @@
-import { Title, Paper, TextInput, Button } from "@mantine/core";
+import { Title, Text, Paper, TextInput, Button } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "../config/firebase";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
+
+  const navigate = useNavigate();
 
   const form = useForm({
     initialValues: {
@@ -62,15 +65,42 @@ export default function Login() {
             {...form.getInputProps("password")}
           />
 
-          <Button
-            variant="filled"
-            size="md"
-            type="submit"
-            mt={16}
-            disabled={loading}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginTop: "16px",
+            }}
           >
-            Login
-          </Button>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Text size="sm" c="dimmed">
+                Need an account?
+              </Text>
+              <Button
+                variant="transparent"
+                size="compact-sm"
+                onClick={() => navigate("/signup")}
+              >
+                Signup
+              </Button>
+            </div>
+
+            <Button
+              m={0}
+              variant="filled"
+              size="md"
+              type="submit"
+              disabled={loading}
+            >
+              Login
+            </Button>
+          </div>
         </form>
       </Paper>
     </div>
